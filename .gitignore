@@ -1,3 +1,7 @@
+# OSX
+#
+.DS_Store
+
 # Logs
 logs
 *.log
@@ -57,3 +61,6 @@ typings/
 # dotenv environment variables file
 .env
 
+# parcel
+.cache/
+dist/
