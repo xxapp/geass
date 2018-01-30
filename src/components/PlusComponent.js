@@ -1,5 +1,4 @@
 import React from 'react';
-import INodeComponent from './INodeComponent';
 
 export default class PlusComponent extends React.Component {
     constructor(props) {
@@ -7,6 +6,6 @@ export default class PlusComponent extends React.Component {
     }
 
     render() {
-        return <INodeComponent {...this.props} />;
+        return <div></div>;
     }
 }

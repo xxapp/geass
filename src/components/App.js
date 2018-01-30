@@ -2,16 +2,16 @@ import React, { Component } from 'react'
 import { connect } from "react-redux";
 import { rootReducer } from "../reducers";
 import nodeMap from '../nodeMap';
+import NodeComponent from './NodeComponent';
 
 class App extends Component {
     render() {
-        console.log(this.props.nodes);
         return (
             <div>
                 {this.props.nodes.map((node, i) => {
                     const nodeSpec = nodeMap[node.type];
                     return (
-                        <nodeSpec.component
+                        <NodeComponent
                             key={i}
                             x={node.x}
                             y={node.y}
@@ -19,7 +19,7 @@ class App extends Component {
                             onChange={(name, value) => this.props.dispatch({ type: 'ARG_CHANGE', index: i, name, value })}
                             inputs={nodeSpec.inputs}
                             outputs={nodeSpec.outputs}
-                            implement={nodeSpec.implement}
+                            body={nodeSpec.component}
                         />
                     );
                 })}
