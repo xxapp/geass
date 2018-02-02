@@ -20,11 +20,12 @@ const initialState = {
 };
 
 export const rootReducer = (state = initialState, action = {}) => {
+    // redux store manage each node and connector
+    // in the other hand, there is a manager that manage the calculation graph
+    // when the structure and value of nodes changed，trigger the calculation process
+    // then update the redux store
     switch (action.type) {
         case 'ARG_CHANGE': {
-            // 1. define a tree data structure and some method
-            // 2. travel through the tree and update node value
-            // 3. update store
             const args = {
                 n1: state.nodes[0].args.n1,
                 n2: state.nodes[0].args.n2
