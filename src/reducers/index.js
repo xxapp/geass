@@ -1,23 +1,28 @@
-import nodeMap from "../nodeMap";
+import { fromJS } from "immutable";
+import { MOVE_NODE } from "../actions/index";
 
-const initialState = {
-    nodes: [{
-        x: 0,
-        y: 0,
-        type: 'plus',
-        args: {
-            n1: 4,
-            n2: 5
+const initialState = fromJS({
+    nodes: {
+        '1517628224256': {
+            x: 0,
+            y: 0,
+            type: 'plus',
         },
-    }, {
-        x: 0,
-        y: 100,
-        type: 'tap',
-        args: {
-            input: 'hello'
-        },
-    }]
-};
+        '1517635236187': {
+            x: 0,
+            y: 100,
+            type: 'tap',
+            state: {
+                input: 'hello',
+            },
+        }
+    },
+    connectors: {
+        '1517635236187': {
+            input: '1517628224256',
+        }
+    },
+});
 
 export const rootReducer = (state = initialState, action = {}) => {
     // redux store manage each node and connector
@@ -25,51 +30,7 @@ export const rootReducer = (state = initialState, action = {}) => {
     // when the structure and value of nodes changed，trigger the calculation process
     // then update the redux store
     switch (action.type) {
-        case 'ARG_CHANGE': {
-            const args = {
-                n1: state.nodes[0].args.n1,
-                n2: state.nodes[0].args.n2
-            };
-            args[action.name] = action.value;
-            const newState = Object.assign(
-                {},
-                state,
-                {
-                    nodes: Object.assign(
-                        [...state.nodes],
-                        {
-                            [action.index]: Object.assign(
-                                {},
-                                state.nodes[action.index],
-                                {
-                                    args: Object.assign(
-                                        {},
-                                        state.nodes[action.index].args,
-                                        {
-                                            [action.name]: action.value
-                                        }
-                                    )
-                                }
-                            ),
-                            1: Object.assign(
-                                {},
-                                state.nodes[1],
-                                {
-                                    args: Object.assign(
-                                        {},
-                                        state.nodes[1].args,
-                                        {
-                                            input: nodeMap['plus'].implement.apply(null, Object.values(args))
-                                        }
-                                    )
-                                }
-                            )
-                        }
-                    )
-                }
-            );
-            return newState;
-        } break;
+        case MOVE_NODE: return state.mergeDeep({nodes: {[action.id]: {x: action.x, y: action.y}}});
         default: return state;
     }
 }

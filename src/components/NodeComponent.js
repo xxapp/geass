@@ -1,33 +1,59 @@
 import React from 'react';
+import { DragSource } from "react-dnd";
+import specMap from '../specs';
 
-export default class NodeComponent extends React.Component {
+const boxSource = {
+	beginDrag(props) {
+		const { id, x, y } = props
+		return { id, x, y };
+	},
+}
+
+class NodeComponent extends React.Component {
     constructor(props) {
         super(props);
     }
 
     render() {
         const {
+            type,
             x,
             y,
-            inputs,
-            outputs,
-            onChange,
-            body: BodyComponent,
+            state,
+            isDragging,
+            connectDragSource,
         } = this.props;
 
-        return (
+        const spec = specMap[type];
+        const {
+            name,
+            inputs,
+            outputs,
+            component: BodyComponent,
+        } = spec;
+
+        if (isDragging) {
+            return null;
+        }
+
+        return connectDragSource(
             <div style={{border: '1px solid #000000', position: 'absolute', left: x, top: y}}>
+                <span>{name}</span>
                 {inputs.map((input, i) => {
                     return <div key={i}>
                         {`${input.name}: ${input.type}`}
-                        <input type="text" value={this.props[input.name]} onChange={(e) => { onChange(input.name, e.target.value) }} />
                     </div>
                 })}
                 {outputs.map((output, i) => {
                     return <div key={i}>{`${output.name}: ${output.type}`}</div>
                 })}
-                <BodyComponent {...this.props} />
+                <BodyComponent {...state} />
             </div>
         );
     }
 }
+
+export default DragSource('box', boxSource, (connect, monitor) => ({
+	connectDragSource: connect.dragSource(),
+	isDragging: monitor.isDragging(),
+}))(NodeComponent);

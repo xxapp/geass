@@ -1,7 +1,7 @@
 import TapComponent from "../components/TapComponent";
 
 export default {
-    name: 'plus',
+    name: 'tap',
     inputs: [
         { name: 'input', type: 'any' },
     ],

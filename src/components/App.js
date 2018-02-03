@@ -1,35 +1,54 @@
 import React, { Component } from 'react'
 import { connect } from "react-redux";
+import { DropTarget, DragDropContext } from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
 import { rootReducer } from "../reducers";
-import nodeMap from '../nodeMap';
 import NodeComponent from './NodeComponent';
+import { addNode, moveNode } from '../actions/index';
+
+const boxTarget = {
+	drop(props, monitor, component) {
+		const item = monitor.getItem()
+		const delta = monitor.getDifferenceFromInitialOffset()
+		const left = Math.round(item.x + delta.x)
+        const top = Math.round(item.y + delta.y)
+        
+		props.moveNode(item.id, left, top);
+	},
+}
 
 class App extends Component {
     render() {
-        return (
-            <div>
-                {this.props.nodes.map((node, i) => {
-                    const nodeSpec = nodeMap[node.type];
+        const { nodes, connectDropTarget } = this.props;
+        return connectDropTarget(
+            <div style={{width: 500, height: 500}}>
+                {Object.keys(nodes).map((key) => {
+                    const node = nodes[key];
                     return (
                         <NodeComponent
-                            key={i}
+                            key={key}
+                            id={key}
                             x={node.x}
                             y={node.y}
-                            {...node.args}
-                            onChange={(name, value) => this.props.dispatch({ type: 'ARG_CHANGE', index: i, name, value })}
-                            inputs={nodeSpec.inputs}
-                            outputs={nodeSpec.outputs}
-                            body={nodeSpec.component}
+                            state={node.state}
+                            type={node.type}
                         />
                     );
                 })}
             </div>
-        )
+        );
     }
 }
 
-export default connect(
+App = DropTarget('box', boxTarget, connect => ({
+	connectDropTarget: connect.dropTarget(),
+}))(App);
+App = DragDropContext(HTML5Backend)(App);
+App = connect(
     state => ({
-        nodes: rootReducer(state).nodes,
+        nodes: rootReducer(state).get('nodes').toJS(),
     }),
+    { moveNode },
 )(App);
+
+export default App;
