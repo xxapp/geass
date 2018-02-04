@@ -3,8 +3,9 @@ import { connect } from "react-redux";
 import { DropTarget, DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import { rootReducer } from "../reducers";
-import NodeComponent from './NodeComponent';
+import DraggableNode from './DraggableNode';
 import { addNode, moveNode } from '../actions/index';
+import DraggingNode from './DraggingNode';
 
 const boxTarget = {
 	drop(props, monitor, component) {
@@ -25,7 +26,7 @@ class App extends Component {
                 {Object.keys(nodes).map((key) => {
                     const node = nodes[key];
                     return (
-                        <NodeComponent
+                        <DraggableNode
                             key={key}
                             id={key}
                             x={node.x}
@@ -35,6 +36,7 @@ class App extends Component {
                         />
                     );
                 })}
+                <DraggingNode/>
             </div>
         );
     }

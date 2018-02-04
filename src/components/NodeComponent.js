@@ -1,13 +1,5 @@
 import React from 'react';
-import { DragSource } from "react-dnd";
 import specMap from '../specs';
-
-const boxSource = {
-	beginDrag(props) {
-		const { id, x, y } = props
-		return { id, x, y };
-	},
-}
 
 class NodeComponent extends React.Component {
     constructor(props) {
@@ -20,8 +12,6 @@ class NodeComponent extends React.Component {
             x,
             y,
             state,
-            isDragging,
-            connectDragSource,
         } = this.props;
 
         const spec = specMap[type];
@@ -32,11 +22,7 @@ class NodeComponent extends React.Component {
             component: BodyComponent,
         } = spec;
 
-        if (isDragging) {
-            return null;
-        }
-
-        return connectDragSource(
+        return (
             <div style={{border: '1px solid #000000', position: 'absolute', left: x, top: y}}>
                 <span>{name}</span>
                 {inputs.map((input, i) => {
@@ -53,7 +39,4 @@ class NodeComponent extends React.Component {
     }
 }
 
-export default DragSource('box', boxSource, (connect, monitor) => ({
-	connectDragSource: connect.dragSource(),
-	isDragging: monitor.isDragging(),
-}))(NodeComponent);
+export default NodeComponent;
